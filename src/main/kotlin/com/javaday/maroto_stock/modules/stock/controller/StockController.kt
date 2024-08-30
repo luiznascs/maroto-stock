@@ -7,12 +7,14 @@ import com.javaday.maroto_stock.models.dtos.StockYieldDTO
 import com.javaday.maroto_stock.modules.stock.service.StockService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@Validated
 @RequestMapping("/api/v1/stocks")
 @Tag(name = "Stock", description = "Endpoints for managing Book")
 class StockController(private val stockService: StockService) {
@@ -37,9 +39,9 @@ class StockController(private val stockService: StockService) {
     )
     @PostMapping("/sell")
     fun sellStock(
-        @Validated @RequestBody request: RequestStockDTO
+        @RequestBody @Valid request: RequestStockDTO
     ): ResponseEntity<StockResponseDTO> =
-        stockService.sellStock(request.userId, request.symbol, request.quantity, request.price)
+        stockService.sellStock(request.userId!!, request.symbol, request.quantity, request.price)
 
     @Operation(summary = "Calculate Stock Yield", description = "Calculates the yield of a stock based on its purchase price and current market value.")
     @GetMapping("/yield")

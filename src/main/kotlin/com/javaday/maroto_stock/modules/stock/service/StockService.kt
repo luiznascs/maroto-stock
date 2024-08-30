@@ -1,6 +1,8 @@
 package com.javaday.maroto_stock.modules.stock.service
 
 
+
+import com.javaday.maroto_stock.config.error.ServiceException
 import com.javaday.maroto_stock.database.entities.Stock
 import com.javaday.maroto_stock.database.entities.Transaction
 import com.javaday.maroto_stock.database.entities.TransactionType
@@ -11,13 +13,16 @@ import com.javaday.maroto_stock.database.repositories.UserRepository
 import com.javaday.maroto_stock.models.dtos.StockResponseDTO
 import com.javaday.maroto_stock.models.dtos.StockTransactionDTO
 import com.javaday.maroto_stock.models.dtos.StockYieldDTO
+import com.javaday.maroto_stock.models.enums.ServiceError
 import com.javaday.maroto_stock.models.extensions.toReal
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import kotlin.random.Random
 
 @Service
+@Validated
 class StockService(
     private val stockPriceClient: StockPriceClient,
     private val userRepository: UserRepository,
@@ -86,7 +91,7 @@ class StockService(
     }
 
     private fun getUser(userId: Long): User =
-        userRepository.findById(userId).orElseThrow { RuntimeException("User not found") }
+        userRepository.findById(userId).orElseThrow { ServiceException(ServiceError.USER_NOT_FOUND) }
 
     fun calculateStockYield(userId: Long): ResponseEntity<List<StockYieldDTO>> {
         val user = userRepository.findById(userId).orElseThrow { Exception("User with id $userId not found") }
@@ -126,7 +131,7 @@ class StockService(
     }
 
     fun getTransactions(userId: Long): ResponseEntity<List<StockTransactionDTO>> {
-        val user = userRepository.findById(userId).orElseThrow { Exception("User with id $userId not found") }
+        val user = userRepository.findById(userId).orElseThrow { ServiceException(ServiceError.USER_NOT_FOUND) }
         val transactions = transactionRepository.findAllByUser(user)
 
         return ResponseEntity.ok(transactions.map { transaction ->

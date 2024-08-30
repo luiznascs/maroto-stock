@@ -32,7 +32,10 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 	//spring-cloud
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-
+	//validation
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("jakarta.validation:jakarta.validation-api:3.0.0")
+	implementation("org.hibernate.validator:hibernate-validator:7.0.0.Final")
 	implementation("com.h2database:h2")
 	//todo coroutines
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
